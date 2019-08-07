@@ -1,0 +1,484 @@
+"""
+Created on Thu Dec 13 16:31:50 2018
+@author: team3: Michelle Dionisio, Laura Schweigert, Shitong Bai, Pratik More, Marcos Ribeiro
+Working Directory: /Users/lauraschweigert/Dropbox/Hult/Module A/Python/PyCourse
+Purpose: World Data Analysis (Python Group Assignment)
+Region: Central Asia and some Europe (including Liberia)
+"""
+###################################################
+###        Missing value imputation             ###
+###################################################
+# 1) Import Libraries and dataset 
+import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from statsmodels.formula.api import ols
+centralasia = pd.read_excel('Team3_Data.xlsx')
+world = pd.read_excel('world_data_hult_regions.xlsx')
+# 2) Checking for missing values
+# 2.1) Are there any missing values?
+print(centralasia.isnull().any())
+# 2.2) How many missing values are there?
+# 2.2.1) in total numbers
+print(centralasia[:].isnull().sum())
+# 2.2.2) as a percentage of total observations
+print((centralasia[:].isnull().sum())/centralasia[:].count().round(2))
+# 3) Flagging missing values
+for col in centralasia:
+    """Flagging missing values as 1 in null column """
+    if centralasia[col].isnull().astype(int).sum() > 0:
+        centralasia['m_'+col] = centralasia[col].isnull().astype(int)
+print(centralasia.head()) #to check if it worked
+# 4) drop col if more than 50% (7 observations) of values are missing, but keep the flagged column
+centralasia = centralasia.dropna(axis=1,thresh=6) 
+# 5) Imputing missing values with three different methods
+#creating independent Data Frames for every method
+df_mean = pd.DataFrame.copy(centralasia)
+df_median = pd.DataFrame.copy(df_mean)
+df_dropped = pd.DataFrame.copy(df_median)
+# loop for df_mean
+for col in df_mean:
+    """Imputing the mean for missing values"""
+    if df_mean[col].isnull().astype(int).sum() > 0:
+        col_mean = df_mean[col].mean()
+        df_mean[col] = df_mean[col].fillna(col_mean).round(2)
+# loop for df_median
+for col in df_median:
+    """Imputing the median for missing values"""
+    if df_median[col].isnull().astype(int).sum() > 0:
+        col_median = df_median[col].median()
+        df_median[col] = df_median[col].fillna(col_median).round(2)
+# using dropna() for df_dropped
+df_dropped = df_dropped.dropna(axis=1,thresh=6).round(2)
+# 6) Choosing an imputation technique: Mean or Median?
+# incidence-hiv
+plt.subplot(1, 2, 1)
+plt.hist(df_mean['incidence_hiv'],
+         bins = 'auto',
+         color='blue',
+         alpha = 0.3)
+plt.title('Mean HIV Incidence')
+plt.subplot(1, 2, 2)
+plt.hist(df_median['incidence_hiv'],
+         bins = 'auto',
+         color='green',
+         alpha = 0.3)
+plt.title('Median HIV Incidence')
+plt.show()
+# exports_pct_gdp
+plt.subplot(1, 2, 1)
+plt.hist(df_mean['exports_pct_gdp'],
+         bins = 'auto',
+         color='blue',
+         alpha = 0.3)
+plt.title('Mean Exports per GDP')
+plt.subplot(1, 2, 2)
+plt.hist(df_median['exports_pct_gdp'],
+         bins = 'auto',
+         color='green',
+         alpha = 0.3)
+plt.title('Median Exports per GDP')
+plt.show()
+# homicides_per_100k
+plt.subplot(1, 2, 1)
+plt.hist(df_mean['homicides_per_100k'],
+         bins = 'auto',
+         color='blue',
+         alpha = 0.3)
+plt.title('Mean Homicides per 100k')
+plt.subplot(1, 2, 2)
+plt.hist(df_median['homicides_per_100k'],
+         bins = 'auto',
+         color='green',
+         alpha = 0.3)
+plt.title('Median Homicides per 100k')
+plt.show()
+#tax_revenue_pct_gdp
+plt.subplot(1, 2, 1)
+plt.hist(df_mean['tax_revenue_pct_gdp'],
+         bins = 'auto',
+         color='blue',
+         alpha = 0.3)
+plt.title('Mean tax_revenue_pct_gdp')
+plt.subplot(1, 2, 2)
+plt.hist(df_median['tax_revenue_pct_gdp'],
+         bins = 'auto',
+         color='green',
+         alpha = 0.3)
+plt.title('Median tax_revenue_pct_gdp')
+plt.show()
+"""
+For all variables the median seems to be the better imputation technique,
+because the data appears to be more normal.
+"""
+# 7) Imputing missing values
+for col in df_median:
+    """ Impute missing values using the mean of each column """
+    if df_median[col].isnull().astype(int).sum() > 0:
+        col_median = df_median[col].median()
+        df_median[col] = df_median[col].fillna(col_median).round(2)
+centralasia['incidence_hiv'] = df_median['incidence_hiv']
+centralasia['exports_pct_gdp'] = df_median['exports_pct_gdp']
+centralasia['homicides_per_100k'] = df_median['homicides_per_100k']
+centralasia['tax_revenue_pct_gdp'] = df_median['tax_revenue_pct_gdp']
+print(centralasia.isnull().any())
+# 8 ) Checking after Imputation
+plt.subplot(2, 2, 1)
+plt.hist(df_median['incidence_hiv'],
+         bins = 'auto',
+         color='green',
+         alpha = 0.3)
+plt.title('Median HIV Incidence')
+plt.subplot(2, 2, 2)
+plt.hist(df_median['exports_pct_gdp'],
+         bins = 'auto',
+         color='blue',
+         alpha = 0.3)
+plt.title('Median Exports per GDP')
+plt.subplot(2, 2, 3)
+plt.hist(df_median['homicides_per_100k'],
+         bins = 'auto',
+         color='yellow',
+         alpha = 0.3)
+plt.xlabel('Median Homicides per 100k')
+plt.subplot(2, 2, 4)
+plt.hist(df_median['tax_revenue_pct_gdp'],
+         bins = 'auto',
+         color='orange',
+         alpha = 0.3)
+plt.xlabel('Median tax_revenue_pct_gdp')
+plt.show()
+"""
+Looks good! Time to move on to outlier detection :)
+"""
+###################################################
+###          Outlier detection                  ###
+###################################################
+# 1) Looking at the distribution and descriptive statistics
+print(centralasia.describe().round(2))
+centralasia.quantile([0.20,0.40,0.60,0.80,1.00]).round(2)
+# 2) Looking at Boxplots to see potential outliers
+for col in centralasia:
+    print(col)
+    if type(centralasia[col][0]) != str:
+        plt.boxplot(centralasia[col],
+                     vert = False,
+                     manage_xticks = True,
+                     patch_artist = False,
+                     meanline = True,
+                     showmeans = True)
+        plt.title("")
+        plt.suptitle(col)
+        plt.show()
+# 3) Creating a list with columns that have outliers
+outliers = centralasia[['access_to_electricity_pop',
+                        'access_to_electricity_rural',
+                        'access_to_electricity_urban',
+                        'incidence_hiv',
+                        'CO2_emissions_per_capita)',
+                        'exports_pct_gdp',
+                        'fdi_pct_gdp',
+                        'gdp_usd',
+                        'gdp_growth_pct',
+                        'homicides_per_100k',
+                        'child_mortality_per_1k',
+                        'avg_air_pollution',
+                        'pct_services_employment',
+                        ]]
+# 4) Flagging the outliers
+#Creating a new column for the outliers
+for col in centralasia:
+    """Creating a new column to flag the outliers"""
+    if col in outliers:
+        centralasia['out_'+col] = 0
+# Building a loop to flag outliers
+"""
+Outliers are values that are outside of the whiskers. 
+The whisker are placed 1.5 times the Inter-Quartile Range (IQR) away from the 1st and the 3rd quartile.
+If a value falls below the lower whisker it will be marked as -1 in the new column and 
+if it is above the upper whisker it will be marked as +1 in the new column.
+"""
+for col in outliers:
+    """flag outliers that are outside of the threshold (whiskers)"""
+    IQR = centralasia[col].quantile(0.75)-centralasia[col].quantile(0.25)
+    lower_threshold = centralasia[col].quantile(0.25)-(1.5*IQR)
+    upper_threshold = centralasia[col].quantile(0.75)+(1.5*IQR)
+    for val in enumerate(centralasia.loc[ : , col]):
+        if val[1] > upper_threshold:
+            centralasia.loc[val[0], 'out_'+col] = 1
+        elif val[1] < lower_threshold:
+            centralasia.loc[val[0], 'out_'+col] = -1
+# 5) Checking the outliers
+for col in centralasia:
+    if col in outliers:
+        print(col+':',centralasia['out_'+col].abs().sum())
+###################################################
+###                    EDA                      ###
+###################################################
+# 1) Creating a correlation matrix
+df_corr = centralasia.corr().round(2)
+print(df_corr)
+#  saving the matrix to Excel
+df_corr.to_excel("centralasia_corr_matrix.xlsx")
+# looking at the correlation between internet usage and child mortality
+pd.np.corrcoef(centralasia['internet_usage_pct'],centralasia['child_mortality_per_1k'])[1,0].round(2)
+# 3) visualize findings
+# heatmap
+fig, ax = plt.subplots(figsize=(47,47))
+sns.heatmap(df_corr,
+            cmap = 'coolwarm',
+            square = True,
+            annot = True,
+            linecolor = 'black',
+            linewidths = 0.5)
+plt.savefig('Centralasia Correlation Heatmap.png')
+plt.show()
+# 4) grouping in income groups
+# creating a new dataset for every income group in centralasia
+low_income_centralasia = centralasia[centralasia['income_group'] == 'Low income']
+lowermiddle_income_centralasia = centralasia[centralasia['income_group'] == 'Lower middle income']
+uppermiddle_income_centralasia = centralasia[centralasia['income_group'] == 'Upper middle income']
+high_income_centralasia = centralasia[centralasia['income_group'] == 'High income']
+# creating a new dataset for every income group in world
+low_income_world = world[world['income_group'] == 'Low income']
+lowermiddle_income_world = world[world['income_group'] == 'Lower middle income']
+uppermiddle_income_world = world[world['income_group'] == 'Upper middle income']
+high_income_world = world[world['income_group'] == 'High income']
+# creating a new variable to give the income group a numerical value
+world['n_income_group'] = world['income_group'].map(
+        {'Low income': 1,
+         'Lower middle income': 2,
+         'Upper middle income': 3,
+         'High income':4})
+centralasia['n_income_group'] = centralasia['income_group'].map(
+        {'Low income': 1,
+         'Lower middle income': 2,
+         'Upper middle income': 3,
+         'High income':4}) 
+print(centralasia['n_income_group'])
+# 5) Plotting the relationship between income group and gdp (Laura)
+sns.lmplot(x = 'gdp_usd',
+           y = 'n_income_group',
+           data = centralasia,
+           fit_reg = True,
+           scatter_kws= {"marker": "D", 
+                        "s": 30},
+           palette = 'plasma')
+plt.title("")
+plt.grid()
+plt.tight_layout()
+plt.show()
+# combined plotting (Laura)
+sns.violinplot(x = 'n_income_group',
+               y = 'gdp_usd',
+               data = world,
+               # data = centralasia,
+               orient = 'v',
+               inner = None, 
+               color = 'white')
+sns.stripplot(x = 'n_income_group',
+              y = 'gdp_usd',
+              data = world,
+              # data = centralasia,
+              jitter = True,
+              size = 5,
+              orient = 'v')
+plt.show()
+# 6) Scatterplots and Correlations of Family Workers (Shitong)
+plt.subplot(1, 2, 1)
+lm1 = ols('unemployment_pct ~ pct_female_employment', 
+         data = centralasia).fit()
+plt.scatter(x = 'pct_female_employment',
+            y = 'unemployment_pct',
+            alpha = 0.7,
+            color = 'red',
+            data = centralasia)
+plt.xlabel('Contributing Family Workers of Females')
+plt.ylabel('Unemployment')
+plt.grid(True)
+plt.plot(centralasia['pct_female_employment'],
+         lm1.fittedvalues,
+         'r',
+         linewidth = 2,
+         color = 'red')
+print(lm1.params)
+plt.subplot(1, 2, 2)
+lm2 = ols('unemployment_pct ~ pct_male_employment', 
+         data = centralasia).fit()
+plt.scatter(x = 'pct_male_employment',
+            y = 'unemployment_pct',
+            alpha = 0.7,
+            color = 'blue',
+            data = centralasia)
+plt.xlabel('Contributing Family Workers of Males')
+plt.ylabel('Unemployment')
+plt.grid(True)
+plt.plot(centralasia['pct_male_employment'],
+         lm2.fittedvalues,
+         'r',
+         linewidth = 2,
+         color = 'blue')
+print(lm2.params)
+plt.tight_layout()
+plt.show()
+# 7) Scatterplots and Correlations of Sectors (Shitong)
+plt.subplot(2, 2, 1)
+lm3 = ols('unemployment_pct ~ pct_agriculture_employment', 
+         data = centralasia).fit()
+plt.scatter(x = 'pct_agriculture_employment',
+            y = 'unemployment_pct',
+            alpha = 0.7,
+            color = 'green',
+            data = centralasia)
+plt.xlabel('Primary Sector')
+plt.ylabel('Unemployment')
+plt.grid(True)
+plt.plot(centralasia['pct_agriculture_employment'],
+         lm3.fittedvalues,
+         'r',
+         linewidth = 2,
+         color = 'green')
+print(lm3.params)
+plt.subplot(2, 2, 2)
+lm4 = ols('unemployment_pct ~ pct_industry_employment', 
+         data = centralasia).fit()
+plt.scatter(x = 'pct_industry_employment',
+            y = 'unemployment_pct',
+            alpha = 0.7,
+            color = 'pink',
+            data = centralasia)
+plt.xlabel('Secondary Sector')
+plt.ylabel('Unemployment')
+plt.grid(True)
+plt.plot(centralasia['pct_industry_employment'],
+         lm4.fittedvalues,
+         'r',
+         linewidth = 2,
+         color = 'pink')
+print(lm4.params)
+plt.subplot(2, 2, 3)
+lm5 = ols('unemployment_pct ~ pct_services_employment', 
+         data = centralasia).fit()
+plt.scatter(x = 'pct_services_employment',
+            y = 'unemployment_pct',
+            alpha = 0.7,
+            color = 'orange',
+            data = centralasia)
+plt.xlabel('Tertiary Sector')
+plt.ylabel('Unemployment')
+plt.grid(True)
+plt.plot(centralasia['pct_services_employment'],
+         lm5.fittedvalues,
+         'r',
+         linewidth = 2,
+         color = 'orange')
+print(lm5.params)
+plt.tight_layout()
+plt.show()
+# 8) Boxplot of CO2 emissions (Marcos)
+plt.boxplot(df_median['CO2_emissions_per_capita)'],
+                 vert = True,
+                 manage_xticks = True,
+                 patch_artist = False,
+                 meanline = True,
+                 showmeans = True)
+plt.title("CO2_emissions_per_capita")
+plt.suptitle("")
+plt.savefig('CO2_emissions_per_capita.png')
+plt.show()
+# 9 ) Histograms with marks for the outlier threshold (Marcos)
+plt.subplot(2, 2, 1)
+sns.distplot(centralasia['CO2_emissions_per_capita)'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('CO2_emissions_per_capita')
+plt.axvline(x = 8.59,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.savefig('CO2_emissions_per_capita_histogram.png')
+######    
+plt.subplot(2, 2, 1)
+sns.distplot(centralasia['exports_pct_gdp'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Exports_pct_gdp')
+plt.axvline(x = 61.22,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.savefig('exports_pct_gdp.png')
+####
+plt.subplot(2, 2, 1)
+sns.distplot(centralasia['fdi_pct_gdp'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Fdi_pct_gdp')
+plt.axvline(x = 16.1,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.savefig('fdi_pct_gdp.png')
+#####
+plt.subplot(2, 2, 1)
+sns.distplot(centralasia['gdp_usd'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Gdp_usd')
+plt.axvline(x = 172448458074.12,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.savefig('gdp_usd.png')
+#####
+plt.subplot(3,3,3)
+fig = plt.figure(figsize=(6, 6))
+sns.distplot(centralasia['fdi_pct_gdp'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('FDI_gdp_pct')
+plt.axvline(x = 8.0,
+            label = 'Outlier Thresholds = 8x GDP',
+            linestyle = '--')
+plt.axvline(x = 16.0,
+            label = 'Outlier Thresholds = 16x GDP',
+            linestyle = ':')
+plt.legend()
+plt.savefig('fdi_gdp_pct_v2.png')
+# 10) Histograms with marks for outlier threshold (Mitchie)
+plt.subplot(2, 2, 1)
+sns.distplot(centralasia['incidence_hiv'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Incidence of HIV')
+plt.axvline(x = 0.06,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.subplot(2, 2, 2)
+sns.distplot(centralasia['homicides_per_100k'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Homicides per 100k')
+plt.axvline(x = 4.24,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.subplot(2, 2, 3)
+sns.distplot(centralasia['child_mortality_per_1k'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Child Mortality per 1k')
+plt.axvline(x = 47.35,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
+plt.subplot(2, 2, 4)
+sns.distplot(centralasia['avg_air_pollution'],
+             bins = 'fd',
+             color = 'g')
+plt.xlabel('Air Pollution')
+plt.axvline(x = 43.73,
+            label = 'Outlier Thresholds',
+            linestyle = '--')
+plt.legend()
