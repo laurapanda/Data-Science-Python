@@ -1,0 +1,374 @@
+"""
+Created on Wednesday Nov 14 18:33:34 2018
+Last edited: Nov 12 2018
+@author: lauraschweigert
+Working Directory:
+/Users/lauraschweigert/Dropbox/Hult/Module A/Python/PyCourse
+Showdown! Wang's Castle
+A Python Game created by Laura Schweigert
+(The game is inspired by the Japanese TV Show "Takeshi's Castle")
+"""
+
+"""
+DocString:
+    1) Introduction:
+    Welcome to Wang's Castle! You are one of the contestants that want to 
+    conquer the Castle of Count Wang. Win all three challenges in order to conquer the castle.
+    KNOCK KNOCK! Find an open door to make it through the huge defensive walls of the castle.
+    VELCRO FLY!  Fly over the moat and climb the castle wall in your velro suit.
+    SUMO RINGS!  Fight Count Wang's Sumo Guards and win two out of three fights.
+    2) Known Bugs / Errors:
+    None.
+"""
+
+from sys import exit
+import random
+import webbrowser
+
+####  Welcome!  ####
+print("\nWelcome to S\vH\vO\vW\vD\vO\vW\vN\v! Wang's Castle! \n")
+input('< Press enter to continue >\n')
+print("Did you know that Wang is chinese for king?")
+input_1 = input('Yes/No:\n').lower()
+if 'y' in input_1:
+    print("\nLook at you smartie pants!")
+elif 'n' in input_1:
+    print("\nAt least you've learned something today!")
+else:
+    print("ERROR 404: Answer not found")
+    print("\nJust kidding...\nInteresting fact, right? Let's start the game!")
+#### Pre game contestant check ####
+def pre_game():
+    """pre_game calculates the bmi of the contestant with the height and the weight"""
+    global contestant_name
+    global contestant_bmi
+    input('< Press enter to continue >\n')
+    print("Before starting the game I have to make sure, that you are in a good physical condition.")
+    print("But first.. What's your name?")
+    contestant_name = input('Name:\n').capitalize()
+    print("\nWhat is your current height in meter? (Please insert a number)")
+    try:
+        contestant_height = float(input('height in meter:\n'))
+    except:
+        print("Oops!  That was no valid number.  Please try again.")
+        pre_game()
+    print ("\nAnd your current weight in kilogram? (Please insert a number)")
+    try:
+        contestant_weight = float(input('weight in kilogram:\n'))
+    except:
+        print("Oops!  That was no valid number.  Please try again.")
+        pre_game()
+    contestant_bmi = int(contestant_weight/contestant_height**2)
+    if float(contestant_bmi) >=25:
+        print("WOW! You must be THE ROCK? You are definetely ready to fight!")
+    elif float(contestant_bmi) >=18 and contestant_bmi<25:
+        print("You're in good shape! Let's conquer the Castle!")
+    else:
+        print("This could be a tough game for you. Prove me wrong, let's start the game!")
+    input('< Press enter to start the game >\n')
+    print('\f')
+    knock_knock()
+#### First Game: KNOCK KNOCK ! ####
+def knock_knock():
+    """Explanation of the first game called Knock Knock."""
+    print("In order to enter Wang's castle you have to get inside the huge defensive wall.")
+    print("The first challenge is called:")
+    print(""" 
+  _  ___   _  ____   _____ _  __  _  ___   _  ____   _____ _  __  _ 
+ | |/ / \ | |/ __ \ / ____| |/ / | |/ / \ | |/ __ \ / ____| |/ / | |
+ | ' /|  \| | |  | | |    | ' /  | ' /|  \| | |  | | |    | ' /  | |
+ |  < | . ` | |  | | |    |  <   |  < | . ` | |  | | |    |  <   | |
+ | . \| |\  | |__| | |____| . \  | . \| |\  | |__| | |____| . \  |_|
+ |_|\_\_| \_|\____/ \_____|_|\_\ |_|\_\_| \_|\____/ \_____|_|\_\ (_)
+          """)
+    input('< Press enter to continue >\n')
+    print("Do you think that now is the right time to hear a Knock Knock Joke?")
+    funny = input('Yes/No: \n').lower()
+    joke_list = [['\nKnock Knock!', '\nWho\'s there?', '\nAlec.', '\nAlec who?', '\nAlectricity', '\nWhat a shocker!', '\nHaha that was funny, right? Now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nHo-ho.', '\nHo-ho who?', '\nYou know, your Santa impression could use a little work.', '\nRemember it\'s Christmas soon! Now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nHatch.', '\nHatch who?', '\nGod bless you.', '\nIn Funny, right? Now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nA little old lady.', '\nA little old lady who?', '\nDang! All this time, I had no idea you could yodel.', '\nWhat a great skill! Now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nCereal.', '\nCereal who?', '\nCereal pleasure to meet you!', '\nYou should give at leat one compliement per day. Now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nTank.', '\nTank who?', '\nYou\'re welcome.' , '\nBut now back to the game:'],
+                 ['\nKnock Knock!', '\nWho\'s there?', '\nTo.', '\nTo who?', '\nIt\'s to whom.', '\nThis is important to remember! Now back to the game:']]
+    joke = random.choice(joke_list)
+    if 'y' in funny and 'b' in funny:
+        print("Maybe yes? Maybe no? It's a great joke! You should hear it anyway.")
+        for part in joke:
+            print(part)
+            input('< Press enter to continue >')
+    elif 'y' in funny :
+        for part in joke:
+            print(part)
+            input('< Press enter to continue >')
+    elif 'n' in funny:
+        print("Your loss! The joke is great. Back to the game:")
+        input('< Press enter to continue >\n')
+    else:
+        print("Alright, so back to the game: ")
+        input('< Press enter to continue >\n')
+    print('\f')
+    print(f"""
+          The defensive wall has six doors, but only three will get you inside the castle grounds.
+          One door is fake and you will fall into the moat, if you open it.
+          Two doors are locked, but if you are fast enough you can still try to open another door!""")
+    input('< Press enter to continue >\n')
+    print("\n\n Are \n\t you \n\t\t ready \n\t\t\t to \n\t\t\t\t RUMMBBLLEEEEE?")
+    input('< Press enter to rumble >\n')
+#def game_1():
+    #"""This is You have to enter the right door in order to get through the defensive walls of the castle."""
+    chances = 2
+    print("Let's go! Choose door 1,2,3,4,5 or 6")
+    while chances > 0:
+        choosen_door = input('door number:\n')
+        if choosen_door == '2' or choosen_door == '6' or choosen_door =='5':
+            print("Great Job! You found the open door. That was easy!")
+            velcro_fly()
+        elif choosen_door == '1' or choosen_door == '4':
+            print("The door is closed! Try another one")
+            chances = chances-1
+        elif choosen_door == '3':
+            print("Splash!\n You just fell into the moat.")
+            fail()
+        else:
+            print("Incorrect input. Choose door 1,2,3,4,5 or 6.")
+    fail() 
+# Velcro Fly!
+def velcro_fly():
+    """Velcro Fly is the second game. You have to fly over the moat and reach the castle walls."""
+    input('< Press enter to continue >\n')
+    print('\f')
+    print("The second challenge is called:")
+    print("""
+ __      __ ______  _       _____    _____  ____    ______  _   __     __  _ 
+ \ \    / /|  ____|| |     |  __ \  / ____|/ __ \  |  ____|| |  \ \   / / | |
+  \ \  / / | |__   | |     | |__) || |    | |  | | | |__   | |   \ \_/ /  | |
+   \ \/ /  |  __|  | |     |  _  / | |    | |  | | |  __|  | |    \   /   | |
+    \  /   | |____ | |____ | | \ \ | |____| |__| | | |     | |____ | |    |_|
+     \/    |______||______||_|  \_\ \_____|\____/  |_|     |______||_|    (_)                                                                                                                                                         
+          """)
+    print(f"""
+          You almost made it to the castle! You just have to hurdle the moat.
+          Lucky for you, there's rope that will help you to cross the moat. 
+          But that's not the only challenge...
+          You are wearing a velcro suit, that will help you to stick to the walls of the castle.
+          The challenge is to hold on to the rope long enough to reach the castle wall and not to fall into the moat.
+          Here is some important information for you: The rope is 4 meter long and the moat is 6 meter wide.""")
+    print("\nDo you want to see a YouTube Video of the game?")
+    video_velcro = input('Yes/No: \n')
+    if 'y' in video_velcro and 'b' in video_velcro:
+        print("Maybe yes? Maybe no? It will help you, so watch it.")
+        webbrowser.open("https://www.youtube.com/watch?v=jqpL8K63Iis")
+        controller = webbrowser.get()
+        controller.open("https://www.youtube.com/watch?v=jqpL8K63Iis")
+    elif 'y' in video_velcro:
+        webbrowser.open("https://www.youtube.com/watch?v=jqpL8K63Iis")
+        controller = webbrowser.get()
+        controller.open("https://www.youtube.com/watch?v=jqpL8K63Iis")
+    elif 'n' in video_velcro:
+        print("Ok. Back to the game:")
+    else:
+        print("Alright, so back to the game: ")
+    input('< Press enter to continue >\n')
+    print("\n\n Are \n\t you \n\t\t ready \n\t\t\t to \n\t\t\t\t RUMMBBLLEEEEE?")
+    input('< Press enter to rumble >\n')
+    print('\f')
+    print(f"""
+          One of the other contestants held on for 3 seconds and bounced off the wall into the moat. 
+          So don't hold on for too long!
+          The other one held on for just 1 second and fell right into the moat. What a bummer!
+          Now it's your turn. How many seconds do you hold on to the rope? (Please insert a number)""")
+    velcro_fly_game()
+def velcro_fly_game():   
+    """This function starts the game Velcro Fly."""
+    try:
+        rope_hold = float(input('> : '))
+    except:
+        print("Oops!  That was no valid number.  Please try again.")
+        velcro_fly_game()
+    if rope_hold >= 2.00 and rope_hold<3.00:
+        if rope_hold <=2.50:
+            print(f"Smooth! Great Job {contestant_name}!!!")
+            sumo_rings()
+        else:
+            print("WE NEED A CRASH CARD IN HERE! That was so close, I almost had a heart attack. But you made it! Good Job!")
+            sumo_rings()
+    elif rope_hold >= 3.00:
+        print("OUCH! What a crash! You were way too fast and bounced of the wall like a basketball.")
+        fail()
+    elif rope_hold < 2.00:
+        print("Splash! Did you even hold the rope? Or did you want to jump right into the moat?")
+        fail()
+    else:
+        print("Please enter valid number.")
+#### Final Game: SUMO RINGS ! ####
+def sumo_rings():
+    """Sumo Rings is the third and final game. You have to win two out of three fights to conquer the castle."""
+    input('< Press enter to continue >\n')
+    print('\f')
+    print("Congratulations! You made it to the final round!\nThis challenge is called: \n")
+    print("""
+   _____ _    _ __  __  ____    _____  _____ _   _  _____  _____   _ 
+  / ____| |  | |  \/  |/ __ \  |  __ \|_   _| \ | |/ ____|/ ____| | |
+ | (___ | |  | | \  / | |  | | | |__) | | | |  \| | |  __| (___   | |
+  \___ \| |  | | |\/| | |  | | |  _  /  | | | . ` | | |_ |\___ \  | |
+  ____) | |__| | |  | | |__| | | | \ \ _| |_| |\  | |__| |____) | |_|
+ |_____/ \____/|_|  |_|\____/  |_|  \_\_____|_| \_|\_____|_____/  (_)                                                                                                                                        
+          """)
+    print(f"""
+          You have to win two out of three fights against Wang's Sumo Wrestler Guards.
+          Some Guards are easier to beat than others. If you win also depends on your height and weight.
+          You have to pick a ball at random out of a box. 
+          The color of the ball will tell you which Sumo Wrestler you will have to fight.""")
+    print("\nDo you want to see a YouTube Video of the game?")
+    video_sumo = input('Yes/No: \n')
+    if 'y' in video_sumo and 'b' in video_sumo:
+        print("Maybe yes? Maybe no? It will help you, so watch it.")
+        webbrowser.open("https://www.youtube.com/watch?v=YDt0i-zpVtw")
+        controller = webbrowser.get()
+        controller.open("https://www.youtube.com/watch?v=YDt0i-zpVtw")
+    elif 'y' in video_sumo:
+        webbrowser.open("https://www.youtube.com/watch?v=YDt0i-zpVtw")
+        controller = webbrowser.get()
+        controller.open("https://www.youtube.com/watch?v=YDt0i-zpVtw")
+    elif 'n' in video_sumo:
+        print("Ok. Back to the game:")
+    else:
+        print("Alright, so back to the game: ")
+    input('< Press enter to continue >\n')
+    sumo_guards = [['red',17],
+                   ['blue',19],
+                   ['yellow',21],
+                   ['green',23],
+                   ['purple',25]]
+    fights = 3
+    win = 0
+    lost = 0
+    while fights > 0 and win < 2 and lost < 2:
+        selected = random.choice(sumo_guards)
+        color = selected[0]
+        compare_bmi = selected[1]
+        print("\n\n Are \n\t you \n\t\t ready \n\t\t\t to \n\t\t\t\t RUMMBBLLEEEEE?")
+        input('< Press enter to pick a ball at random >\n')
+        print('\f')
+        print(f"\nYou picked the {color} ball. Let's fight!")
+        if color == 'red':
+            print("""
+  ____  _____ ____  
+ |  _ \| ____|  _ \ 
+ | |_) |  _| | | | |
+ |  _ <| |___| |_| |
+ |_| \_\_____|____/ 
+            """)
+            input('< Press enter as hard as possible to fight the Wrestler >\n')
+            print("You won the fight against Guard Spud! That was way too easy!")
+            fights = fights - 1
+            win = win + 1
+            sumo_guards.remove(['red',17])
+        elif color == 'blue':
+            print("""
+  ____  _    _   _ _____ 
+ | __ )| |  | | | | ____|
+ |  _ \| |  | | | |  _|  
+ | |_) | |__| |_| | |___ 
+ |____/|_____\___/|_____|                         
+            """)
+            input('< Press enter as hard as possible to fight the Wrestler >\n')
+            print("Lord Hammer was easy to beat. Let's move on!")
+            fights = fights - 1
+            win = win + 1
+            sumo_guards.remove(['blue',19])
+        elif color =='yellow':
+            print("""
+ __   _______ _     _     _____        __
+ \ \ / / ____| |   | |   / _ \ \      / /
+  \ V /|  _| | |   | |  | | | \ \ /\ / / 
+   | | | |___| |___| |__| |_| |\ V  V /  
+   |_| |_____|_____|_____\___/  \_/\_/
+                  """)
+            input('< Press enter as hard as possible to fight the Wrestler >\n')
+            print("The yellow sumo wrestler is Shin Suganuma. He is not that easy to beat, but you managed to tackle him. Good Job!")
+            fights = fights - 1
+            win = win + 1
+            sumo_guards.remove(['yellow',21])
+        elif color == 'green':
+            print("""
+   ____ ____  _____ _____ _   _ 
+  / ___|  _ \| ____| ____| \ | |
+ | |  _| |_) |  _| |  _| |  \| |
+ | |_| |  _ <| |___| |___| |\  |
+  \____|_| \_\_____|_____|_| \_|
+                  """)
+            input('< Press enter as hard as possible to fight the Wrestler >\n')
+            print("The fight of the year! It's you against Count Wang himself! He has been practicing his ring skills since he was born!")
+            if contestant_bmi >= compare_bmi:
+                print("What a fight! Both fighters are really strong, but somehow you managed to win.")
+                fights = fights - 1
+                win = win + 1
+                sumo_guards.remove(['green',23])
+            else:
+                print("POW! BANG! oh no, you lost this fight!")
+                fights = fights - 1
+                sumo_guards.remove(['green',23])
+                lost = lost + 1
+        else:
+            print("""
+  ____  _   _ ____  ____  _     _____ 
+ |  _ \| | | |  _ \|  _ \| |   | ____|
+ | |_) | | | | |_) | |_) | |   |  _|  
+ |  __/| |_| |  _ <|  __/| |___| |___ 
+ |_|    \___/|_| \_\_|   |_____|_____|
+                  """)
+            input('< Press enter as hard as possible to fight the Wrestler >\n')
+            print("I hope you have a good insurance. You're fighting the legendary Sumo Wrestler called 'the Porker'.")
+            input('< Press enter to find out if you won or lost >\n')
+            print("That doesn't look pretty... You not only lost this fight but also broke your arm.")
+            fights = fights - 1
+            sumo_guards.remove(['purple',25])
+            lost = lost + 1
+#### Win or Lose? ###
+    if win >= 2:
+        input('< Press enter to continue >\n')
+        print('\f')
+        print(f"""
+              CONGRATULATIONS! You successfully conquered the Castle and won the game!
+              It will now be called: {contestant_name}'s Castle!
+              New contestants are trying to conquer your castle. Beat them in the game in order to keep your Castle.""")
+        play_again()
+    else:
+        input('< Press enter to continue >\n')
+        print('\f')
+        print("\nYou didn't win enough fights to conquer the castle.")
+        fail()    
+#### Fail Function ####
+def fail():
+    """The fail function tells the player that he lost the game"""
+    print("""
+ _______  _______  _______  _______      _______           _______  _______ 
+(  ____ \(  ___  )(       )(  ____ \    (  ___  )|\     /|(  ____ \(  ____ )
+| (    \/| (   ) || () () || (    \/    | (   ) || )   ( || (    \/| (    )|
+| |      | (___) || || || || (__        | |   | || |   | || (__    | (____)|
+| | ____ |  ___  || |(_)| ||  __)       | |   | |( (   ) )|  __)   |     __)
+| | \_  )| (   ) || |   | || (          | |   | | \ \_/ / | (      | (\ (   
+| (___) || )   ( || )   ( || (____/\    | (___) |  \   /  | (____/\| ) \ \__
+(_______)|/     \||/     \|(_______/    (_______)   \_/   (_______/|/   \__/                                                                                    
+    """)
+    print(f"I'm sorry {contestant_name}, it looks like you've lost.")
+    play_again()    
+#### Would you like to play again? ####
+def play_again():
+    """This function asks, if you want to play again""" 
+    print("\nWould you like to try again?")
+    another_one = input("Yes/No: \n").lower()
+    yes_list = ['yes', 'y', 'yse','yay','ye', 'shì de']
+    no_list = ['no', 'n', 'on','nope', 'méiyǒu']
+    if another_one in yes_list:
+        knock_knock()        
+    elif another_one in no_list:
+        print(f"Thank you for playing Wang's Castle! I hope to see you again {contestant_name}.")
+        exit(0)
+    else:
+        print("Please answer with yes or no. Seems like you are still deciding.")
+        play_again()
+#### Game Start ####
+pre_game()
