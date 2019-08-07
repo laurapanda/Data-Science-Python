@@ -1,0 +1,53 @@
+"""
+Created on Sun Sep  2 17:54:36 2018
+@author: lauraschweigert
+Working Directory:
+/Users/lauraschweigert/Dropbox/Hult/Module A/Python/PyCourse
+Purpose:
+To practice user input
+"""
+# Source: https://www.woojr.com/summer-mad-libs/funny-mad-libs/
+print("Give me an adjective:", end = ' ')
+adjective_1 = input()
+print("Now give me a nationality:", end = ' ')
+nationality_1 = input()
+print("Now a person's name:", end = ' ')
+name_person_1 = input()
+print("A noun:", end = ' ')
+noun_1 = input()
+print("Another adjective:", end = ' ')
+adjective_2 = input()
+print("Another noun:", end = ' ')
+noun_2 = input()
+print("Another adjective:", end = ' ')
+adjective_3 = input()
+print("And another adjective:", end = ' ')
+adjective_4 = input()
+print("A plural noun:", end = ' ')
+plural_noun_1 = input()
+print("Another noun:", end = ' ')
+noun_3 = input()
+print("A number:", end = ' ')
+number_1 = input()
+print("Now give me a shape in plural form:", end = ' ')
+shapes_1 = input()
+print("A food that you like:", end = ' ')
+food_1 = input()
+print("A food that you do not like:", end = ' ')
+food_2 = input()
+print("And finally, another number:", end = ' ')
+number_2 = input()
+print("Great job! Are you ready for your story?", end = ' ')
+yesNo = input("y/n: ")
+print("\n")
+print(f"Pizza was invented by a {adjective_1} {nationality_1} chef named " +
+f"{name_person_1}.")
+print(f"To make a pizza, you need a lump of {noun_1}, and make a thin, " +
+f"round {adjective_2} {noun_2}.")
+print(f"Then you cover it with {adjective_3} sauce, {adjective_4} cheese, " +
+f"and fresh chopped {plural_noun_1}.")
+print(f"Next you have to bake it in a very hot {noun_3}.")
+print(f"When it's done, cut it into {number_1} {shapes_1}.")
+print(f"Some people like {food_1} pizza the best, but my favorite is the " +
+f"{food_2} pizza.")
+print(f"If I could, I would eat pizza {number_2} times a day.")
